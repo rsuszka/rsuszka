@@ -7,6 +7,12 @@ wszystkie wyniki uzyskane przez graczy.*/
 #include<string.h>
 #include<stdlib.h>
 #include<stdbool.h>
+typedef struct Etap_
+{
+	int szerokosc;
+	int dlugosc;
+	char** etap_wsk;
+} Etap;
 void komunikat(void)
 {
 	printf("Witaj w grze LABIRYNY!\n");
@@ -16,53 +22,24 @@ void komunikat(void)
 	printf("3. Tabela wynikow\n");
 	printf("4. Wyjscie\n");
 }
-int d_etapu(char* nazwa_pliku)
-{
-	FILE* plik;
-	int dlugosc;
-	fopen_s(&plik, nazwa_pliku, "r");
-	if (plik == NULL)
-	{
-		perror("Blad otwarcia pliku z etapem.");
-		exit(-10);
-	}
-	fseek(plik, 2, SEEK_SET);
-	fscanf_s(plik, "%d", &dlugosc);
-	fclose(plik);
-	return dlugosc;
-}
-int s_etapu(char* nazwa_pliku)
-{
-	FILE* plik;
-	int szerokosc;
-	fopen_s(&plik, nazwa_pliku, "r");
-	if (plik == NULL)
-	{
-		perror("Blad otwarcia pliku z etapem.");
-		exit(-10);
-	}
-	fscanf_s(plik, "%d", &szerokosc);
-	fclose(plik);
-	return szerokosc;
-}
-void wyswietl_etap_c(char** etap_wsk, int dlugosc, int szerokosc, int czysc)
+void wyswietl_etap_c(Etap* o_etap, int czysc)
 {
 	int i, j;
 	if (czysc==1)
 		system("cls");
-	for (i = 0; i < dlugosc; i++)
+	for (i = 0; i < o_etap->dlugosc; i++)
 	{
-		for (j = 0; j < szerokosc; j++)
-			printf("%c", etap_wsk[i][j]);
+		for (j = 0; j < o_etap->szerokosc; j++)
+			printf("%c", o_etap->etap_wsk[i][j]);
 		printf("\n");
 	}
 }
-void czysc_pamiec(char** tablica_wsk, int dlugosc)
+void czysc_pamiec(Etap* o_etap)
 {
 	int i;
-	for (i = 0; i < dlugosc; i++) //zwolnienie pamieci
-		free(tablica_wsk[i]);
-	free(tablica_wsk);
+	for (i = 0; i < o_etap->dlugosc; i++) //zwolnienie pamieci
+		free(o_etap->etap_wsk[i]);
+	free(o_etap->etap_wsk);
 }
 void wyswietl_liste_etapow(void)
 {
@@ -89,6 +66,7 @@ void tworzenie_etapu(int x, int y)
 {
 	FILE* zapis_etapu;
 	FILE* log_etapow;
+	Etap tworzony_etap;
 	int i,j,k,l,m,n; //liczniki petli
 	int a = x;
 	char** etap;
@@ -103,12 +81,13 @@ void tworzenie_etapu(int x, int y)
 	}
 	for (k = 0; k < y; k++)
 	{
-		scanf_s("%s", bufor,50);
+		scanf_s("%s", bufor, y+1);
 		for (l = 0; l < x; l++)
 		{
 			etap[k][l] = bufor[l];
 		}
 	}
+	free(bufor);
 	wyswietl_liste_etapow();
 	printf("Podaj nazwe etapu (Nie dluzsza niz 20 znakow): ");
 	scanf_s("%s", nazwa_etapu, 20);
@@ -138,10 +117,13 @@ void tworzenie_etapu(int x, int y)
 	fprintf(log_etapow, " ");
 	fclose(log_etapow);
 	printf("Zapisano nastepujacy etap:\n");
-	wyswietl_etap_c(etap, y, x, 0);
-	czysc_pamiec(etap, y);
+	tworzony_etap.dlugosc = y;
+	tworzony_etap.szerokosc = x;
+	tworzony_etap.etap_wsk = etap;
+	wyswietl_etap_c(&tworzony_etap, 0);
+	czysc_pamiec(&tworzony_etap);
 }
-char** wczytaj_etap(char* nazwa_etapu)
+char** wczytaj_etap(char* nazwa_etapu, Etap* o_etap)
 {
 	FILE* etap;
 	int szerokosc, dlugosc;
@@ -169,6 +151,9 @@ char** wczytaj_etap(char* nazwa_etapu)
 			fscanf_s(etap, "%c", &etap_tab[j][k]);
 	}
 	fclose(etap);
+	o_etap->dlugosc = dlugosc;
+	o_etap->szerokosc = szerokosc;
+	o_etap->etap_wsk = etap_tab;
 	return etap_tab;
 }
 int main()
@@ -177,6 +162,7 @@ int main()
 	bool spr_wyboru = true;
 	char nazwa_etapu[20];
 	char** etap_wsk;
+	Etap Obecny_etap;
 	komunikat();
 	while (spr_wyboru == true)
 	{
@@ -188,11 +174,9 @@ int main()
 			wyswietl_liste_etapow();
 			printf("Wybierz etap z powyzszej listy.\n");
 			scanf_s("%s", nazwa_etapu, 20);
-			etap_wsk = wczytaj_etap(nazwa_etapu);
-			dlugosc_etapu = d_etapu(nazwa_etapu);
-			szerokosc_etapu = s_etapu(nazwa_etapu);
-			wyswietl_etap_c(etap_wsk, dlugosc_etapu, szerokosc_etapu, 1);
-			czysc_pamiec(etap_wsk, dlugosc_etapu);
+			etap_wsk = wczytaj_etap(nazwa_etapu, &Obecny_etap);
+			wyswietl_etap_c(&Obecny_etap, 1);
+			czysc_pamiec(&Obecny_etap);
 			spr_wyboru = false;
 			break;
 		case 2:
