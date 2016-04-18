@@ -22,15 +22,15 @@ void komunikat(void)
 	printf("3. Tabela wynikow\n");
 	printf("4. Wyjscie\n");
 }
-void wyswietl_etap_c(Etap* o_etap, int czysc)
+void wyswietl_etap_c(Etap o_etap, int czysc)
 {
 	int i, j;
 	if (czysc==1)
 		system("cls");
-	for (i = 0; i < o_etap->dlugosc; i++)
+	for (i = 0; i < o_etap.dlugosc; i++)
 	{
-		for (j = 0; j < o_etap->szerokosc; j++)
-			printf("%c", o_etap->etap_wsk[i][j]);
+		for (j = 0; j < o_etap.szerokosc; j++)
+			printf("%c", o_etap.etap_wsk[i][j]);
 		printf("\n");
 	}
 }
@@ -120,7 +120,7 @@ void tworzenie_etapu(int x, int y)
 	tworzony_etap.dlugosc = y;
 	tworzony_etap.szerokosc = x;
 	tworzony_etap.etap_wsk = etap;
-	wyswietl_etap_c(&tworzony_etap, 0);
+	wyswietl_etap_c(tworzony_etap, 0);
 	czysc_pamiec(&tworzony_etap);
 }
 char** wczytaj_etap(char* nazwa_etapu, Etap* o_etap)
@@ -175,7 +175,7 @@ int main()
 			printf("Wybierz etap z powyzszej listy.\n");
 			scanf_s("%s", nazwa_etapu, 20);
 			etap_wsk = wczytaj_etap(nazwa_etapu, &Obecny_etap);
-			wyswietl_etap_c(&Obecny_etap, 1);
+			wyswietl_etap_c(Obecny_etap, 1);
 			czysc_pamiec(&Obecny_etap);
 			spr_wyboru = false;
 			break;
