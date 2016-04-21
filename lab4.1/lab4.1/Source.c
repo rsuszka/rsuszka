@@ -1,5 +1,7 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
+#include<math.h>
 typedef struct Slowo_
 {
 	int lw; //liczba wyst¹pieñ s³owa
@@ -91,6 +93,7 @@ Slowo* wstaw(Slownik *s, char *slowo)
 		nowe_slowo->lw = 1;
 		s->korzen = nowe_slowo;
 		s->mf = nowe_slowo;
+		s->h = 1;
 	}
 	else
 		s->korzen = korzen_tmp;
@@ -131,8 +134,38 @@ Slownik* tworz_slownik(char* nazwa_pliku)
 				nowy_slownik->mf = wstawiany_element;
 		}
 	}
-	fclose(plik);
+	//fclose(plik);
 	return nowy_slownik;
+}
+void zapisz_do_pliku(Slownik aktualny_slownik, char* nazwa_pliku)
+{
+	FILE* plik;
+	int i; //licznim pêtli
+	int licznik = aktualny_slownik.mf->lw;
+	fopen_s(&plik, nazwa_pliku, "w");
+	while (licznik != 0)
+	{
+		for (i = 0; i < aktualny_slownik.ls; i++)
+		{
+			if (aktualny_slownik.t[i]->lw == licznik)
+			{
+				fprintf(plik, "%s", aktualny_slownik.t[i]->slowo);
+				fprintf(plik, "%d", aktualny_slownik.t[i]->lw);
+				fprintf(plik, " ");
+			}
+		}
+		licznik--;
+	}
+	fclose(plik);
+}
+double wys_drzewa_iloraz(Slownik aktualny_slownik)
+{
+	double iloraz;
+	double idealna_wysokosc, idealna_wysokosc_zaokr;
+	idealna_wysokosc = log2(aktualny_slownik.ls);
+	idealna_wysokosc_zaokr = ceil(idealna_wysokosc);
+	iloraz = aktualny_slownik.h / idealna_wysokosc_zaokr;
+	return iloraz;
 }
 void usun_drzewo(Slowo* korzen)
 {
@@ -157,9 +190,14 @@ void usun_drzewo(Slowo* korzen)
 int main()
 {
 	Slownik* nowy_slownik;
-	nowy_slownik = tworz_slownik("drzewo2.txt");
-	printf("%s", nowy_slownik->korzen->lewy->slowo, 20);
+	double stos_wys_drzewa;
+	nowy_slownik = tworz_slownik("drzewo.txt");
+	//printf("%s", nowy_slownik->korzen->lewy->slowo, 20); //usun¹æ
+	zapisz_do_pliku(*nowy_slownik, "zapis.txt");
+	stos_wys_drzewa = wys_drzewa_iloraz(*nowy_slownik);
+	printf("stosunek wysokosci drzewa do idealnego drzewa wynosi: %f\n", stos_wys_drzewa);
 	usun_drzewo(nowy_slownik->korzen);
+	free(nowy_slownik);
 	system("Pause");
 	return 0;
 }
