@@ -162,7 +162,6 @@ void zapisz_do_pliku(Slownik aktualny_slownik, char* nazwa_pliku)
 				if (aktualny_slownik.t[i]->lw == licznik)
 				{
 					fprintf(plik, "%s", aktualny_slownik.t[i]->slowo);
-					fprintf(plik, "%d", aktualny_slownik.t[i]->lw);
 					fprintf(plik, " ");
 				}
 			}
