@@ -34,6 +34,7 @@ Slowo* wstaw(Slownik *s, char *slowo)
 	nowe_slowo = NULL;
 	korzen_tmp = s->korzen; //zapamiêtanie korzenia
 	int dl_slowa = dlugosc_slowa(slowo); //funkcja zwraca d³ugoœæ s³owa+1 (miejsce na znak koñca ³añcucha)
+	int licznik_wysokosci = 0; //licznik wysokoœci drzewa
 	char* slowo_tab;
 	slowo_tab = (char*)malloc(dl_slowa*sizeof(char));
 	memcpy(slowo_tab, slowo, dl_slowa*sizeof(char));
@@ -52,7 +53,10 @@ Slowo* wstaw(Slownik *s, char *slowo)
 		if (strcmp(s->korzen->slowo, slowo) > 0)
 		{
 			if (s->korzen->lewy != NULL)
+			{
+				licznik_wysokosci++;
 				s->korzen = s->korzen->lewy;
+			}
 			else
 			{
 				nowe_slowo = (Slowo*)malloc(sizeof(Slowo)); //dodanie s³owa "na lewo"
@@ -62,14 +66,17 @@ Slowo* wstaw(Slownik *s, char *slowo)
 				nowe_slowo->lw = 1;
 				s->korzen->lewy = nowe_slowo;
 				if (s->korzen->prawy == NULL)
-					s->h = s->h + 1;
+					licznik_wysokosci++;
 				break;
 			}
 		}
 		else
 		{
-			if(s->korzen->prawy!=NULL)
+			if (s->korzen->prawy != NULL)
+			{
+				licznik_wysokosci++;
 				s->korzen = s->korzen->prawy;
+			}
 			else
 			{
 				nowe_slowo = (Slowo*)malloc(sizeof(Slowo)); //dodanie s³owa "na prawo"
@@ -79,7 +86,7 @@ Slowo* wstaw(Slownik *s, char *slowo)
 				nowe_slowo->lw = 1;
 				s->korzen->prawy = nowe_slowo;
 				if (s->korzen->lewy == NULL)
-					s->h = s->h + 1;
+					licznik_wysokosci++;
 				break;
 			}
 		}
@@ -93,10 +100,11 @@ Slowo* wstaw(Slownik *s, char *slowo)
 		nowe_slowo->lw = 1;
 		s->korzen = nowe_slowo;
 		s->mf = nowe_slowo;
-		s->h = 1;
 	}
 	else
-		s->korzen = korzen_tmp;
+		s->korzen = korzen_tmp; //[rzywrócenie korzenia
+	if (licznik_wysokosci > s->h)
+		s->h = licznik_wysokosci;
 	return nowe_slowo;
 }
 Slownik* tworz_slownik(char* nazwa_pliku)
@@ -107,7 +115,7 @@ Slownik* tworz_slownik(char* nazwa_pliku)
 	Slowo* wstawiany_element;
 	int max_dl = 50; //maksymalna dlugosc slowa
 	char bufor[50]; //bufor wczytuj¹cy s³owa
-	int slowa_il = 1000;
+	int slowa_il = 1000; //max dlugoœæ tablicy "t"
 	int licznik = 0;
 	int licznik2 = 1;
 	nowy_slownik->t = (Slowo**)malloc(slowa_il*sizeof(Slowo*)); //pocz¹tkowa imicjalizacja s³ownika
@@ -126,7 +134,7 @@ Slownik* tworz_slownik(char* nazwa_pliku)
 			if (licznik == (licznik2*slowa_il)-1) //sprawdzenie tablica s³ow nie bêdzie przepe³niona
 			{
 				licznik2++;
-				nowy_slownik->t = (Slowo**)realloc(nowy_slownik->t, licznik2*sizeof(Slowo*));
+				nowy_slownik->t = (Slowo**)realloc(nowy_slownik->t, licznik2*slowa_il*sizeof(Slowo*)); //realokacja pamiêci (powiêkszenie)
 			}
 			nowy_slownik->t[licznik] = wstawiany_element;
 			licznik++;
@@ -141,33 +149,38 @@ void zapisz_do_pliku(Slownik aktualny_slownik, char* nazwa_pliku)
 {
 	FILE* plik;
 	int i; //licznim pêtli
-	int licznik = aktualny_slownik.mf->lw;
+	int licznik = aktualny_slownik.mf->lw; //ustawienie licznika na iloœæ s³ów do zapisu
 	fopen_s(&plik, nazwa_pliku, "w");
-	while (licznik != 0)
+	if (plik == NULL)
+		printf("Error\n");
+	else
 	{
-		for (i = 0; i < aktualny_slownik.ls; i++)
+		while (licznik != 0) //przeszukiwanie tablicy i zapis s³ow od najczêœciej wystêpuj¹cych
 		{
-			if (aktualny_slownik.t[i]->lw == licznik)
+			for (i = 0; i < aktualny_slownik.ls; i++)
 			{
-				fprintf(plik, "%s", aktualny_slownik.t[i]->slowo);
-				fprintf(plik, "%d", aktualny_slownik.t[i]->lw);
-				fprintf(plik, " ");
+				if (aktualny_slownik.t[i]->lw == licznik)
+				{
+					fprintf(plik, "%s", aktualny_slownik.t[i]->slowo);
+					fprintf(plik, "%d", aktualny_slownik.t[i]->lw);
+					fprintf(plik, " ");
+				}
 			}
+			licznik--;
 		}
-		licznik--;
+		fclose(plik);
 	}
-	fclose(plik);
 }
 double wys_drzewa_iloraz(Slownik aktualny_slownik)
 {
 	double iloraz;
 	double idealna_wysokosc, idealna_wysokosc_zaokr;
 	idealna_wysokosc = log2(aktualny_slownik.ls);
-	idealna_wysokosc_zaokr = ceil(idealna_wysokosc);
+	idealna_wysokosc_zaokr = floor(idealna_wysokosc);
 	iloraz = aktualny_slownik.h / idealna_wysokosc_zaokr;
 	return iloraz;
 }
-void usun_drzewo(Slowo* korzen)
+void usun_drzewo(Slowo* korzen) //funkcja usuwa drzewo rekurencyjnie
 {
 	if (korzen != NULL)
 	{
@@ -191,12 +204,11 @@ int main()
 {
 	Slownik* nowy_slownik;
 	double stos_wys_drzewa;
-	nowy_slownik = tworz_slownik("drzewo.txt");
-	//printf("%s", nowy_slownik->korzen->lewy->slowo, 20); //usun¹æ
+	nowy_slownik = tworz_slownik("test.txt");
 	zapisz_do_pliku(*nowy_slownik, "zapis.txt");
 	stos_wys_drzewa = wys_drzewa_iloraz(*nowy_slownik);
 	printf("stosunek wysokosci drzewa do idealnego drzewa wynosi: %f\n", stos_wys_drzewa);
-	usun_drzewo(nowy_slownik->korzen);
+	usun_drzewo(nowy_slownik->korzen); //usuniêcie drzewa
 	free(nowy_slownik);
 	system("Pause");
 	return 0;
