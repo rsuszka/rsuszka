@@ -208,6 +208,7 @@ int main()
 	stos_wys_drzewa = wys_drzewa_iloraz(*nowy_slownik);
 	printf("stosunek wysokosci drzewa do idealnego drzewa wynosi: %f\n", stos_wys_drzewa);
 	usun_drzewo(nowy_slownik->korzen); //usuniêcie drzewa
+	free(nowy_slownik->t);
 	free(nowy_slownik);
 	system("Pause");
 	return 0;
