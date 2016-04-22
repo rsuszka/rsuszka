@@ -124,26 +124,31 @@ Slownik* tworz_slownik(char* nazwa_pliku)
 	nowy_slownik->h = 0;
 	nowy_slownik->korzen = NULL;
 	fopen_s(&plik, nazwa_pliku, "r");
-	while (!feof(plik))
+	if (plik == NULL)
+		printf("Error\n");
+	else
 	{
-		fscanf_s(plik, "%s", bufor, max_dl);
-		wstawiany_element = wstaw(nowy_slownik, bufor);
-		if (wstawiany_element != NULL)
+		while (!feof(plik))
 		{
-			nowy_slownik->ls = nowy_slownik->ls + 1;
-			if (licznik == (licznik2*slowa_il)-1) //sprawdzenie tablica s³ow nie bêdzie przepe³niona
+			fscanf_s(plik, "%s", bufor, max_dl);
+			wstawiany_element = wstaw(nowy_slownik, bufor);
+			if (wstawiany_element != NULL)
 			{
-				licznik2++;
-				nowy_slownik->t = (Slowo**)realloc(nowy_slownik->t, licznik2*slowa_il*sizeof(Slowo*)); //realokacja pamiêci (powiêkszenie)
+				nowy_slownik->ls = nowy_slownik->ls + 1;
+				if (licznik == (licznik2*slowa_il) - 1) //sprawdzenie tablica s³ow nie bêdzie przepe³niona
+				{
+					licznik2++;
+					nowy_slownik->t = (Slowo**)realloc(nowy_slownik->t, licznik2*slowa_il*sizeof(Slowo*)); //realokacja pamiêci (powiêkszenie)
+				}
+				nowy_slownik->t[licznik] = wstawiany_element;
+				licznik++;
+				if (nowy_slownik->mf == NULL)
+					nowy_slownik->mf = wstawiany_element;
 			}
-			nowy_slownik->t[licznik] = wstawiany_element;
-			licznik++;
-			if (nowy_slownik->mf == NULL)
-				nowy_slownik->mf = wstawiany_element;
 		}
+		fclose(plik);
+		return nowy_slownik;
 	}
-	//fclose(plik);
-	return nowy_slownik;
 }
 void zapisz_do_pliku(Slownik aktualny_slownik, char* nazwa_pliku)
 {
