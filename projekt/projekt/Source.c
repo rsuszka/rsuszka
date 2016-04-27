@@ -167,14 +167,15 @@ void sterowanie(Etap* o_etap)
 	obecne_polozenie_W = 0;
 	obecne_polozenie_K = 1;
 	wyjscie = false;
-	while ((wyjscie==false))
+	while ((wyjscie == false))
 	{
 		znak = _getch();
 		if (znak == 224)
 		{
 			znak = _getch();
-			if (znak == 72)
+			switch (znak)
 			{
+			case 72:
 				if ((obecne_polozenie_W - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] != '-'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
@@ -182,10 +183,9 @@ void sterowanie(Etap* o_etap)
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_W--;
 				}
+				break;
 				//printf("gora\n");
-			}
-			if (znak == 75)
-			{
+			case 75:
 				if ((obecne_polozenie_K - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
@@ -193,10 +193,9 @@ void sterowanie(Etap* o_etap)
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_K--;
 				}
+				break;
 				//printf("lewo\n");
-			}
-			if (znak == 80)
-			{
+			case 80:
 				if ((obecne_polozenie_W + 1 < o_etap->dlugosc) && (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] != '-'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
@@ -204,10 +203,9 @@ void sterowanie(Etap* o_etap)
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_W++;
 				}
+				break;
 				//printf("dol\n");
-			}
-			if (znak == 77)
-			{
+			case 77:
 				if ((obecne_polozenie_K + 1 < o_etap->szerokosc) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
@@ -215,6 +213,7 @@ void sterowanie(Etap* o_etap)
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_K++;
 				}
+				break;
 				//printf("prawo\n");
 			}
 			wyswietl_etap_c(*o_etap, 1);
