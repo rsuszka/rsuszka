@@ -22,6 +22,10 @@ void komunikat(void)
 	printf("3. Tabela wynikow\n");
 	printf("4. Wyjscie\n");
 }
+void komunikat_koncowy(void)
+{
+	printf("Ukonczyles etap!\n");
+}
 void wyswietl_etap_c(Etap o_etap, int czysc)
 {
 	int i, j;
@@ -156,6 +160,92 @@ char** wczytaj_etap(char* nazwa_etapu, Etap* o_etap)
 	o_etap->etap_wsk = etap_tab;
 	return etap_tab;
 }
+void sterowanie(Etap* o_etap)
+{
+	int znak, obecne_polozenie_K, obecne_polozenie_W;
+	bool wyjscie;
+	obecne_polozenie_W = 0;
+	obecne_polozenie_K = 1;
+	wyjscie = false;
+	while ((wyjscie==false))
+	{
+		znak = _getch();
+		if (znak == 224)
+		{
+			znak = _getch();
+			if (znak == 72)
+			{
+				if ((obecne_polozenie_W - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] != '-'))
+				{
+					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
+					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+					obecne_polozenie_W--;
+				}
+				//printf("gora\n");
+			}
+			if (znak == 75)
+			{
+				if ((obecne_polozenie_K - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] != '|'))
+				{
+					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
+					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+					obecne_polozenie_K--;
+				}
+				//printf("lewo\n");
+			}
+			if (znak == 80)
+			{
+				if ((obecne_polozenie_W + 1 < o_etap->dlugosc) && (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] != '-'))
+				{
+					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
+					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+					obecne_polozenie_W++;
+				}
+				//printf("dol\n");
+			}
+			if (znak == 77)
+			{
+				if ((obecne_polozenie_K + 1 < o_etap->szerokosc) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] != '|'))
+				{
+					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
+					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+					obecne_polozenie_K++;
+				}
+				//printf("prawo\n");
+			}
+			wyswietl_etap_c(*o_etap, 1);
+		}
+	}
+	komunikat_koncowy();
+}
+int meta(Etap o_etap, int znak, int wiersz, int kolumna)
+{
+	int wynik = 0;
+	switch (znak)
+	{
+	case 72:
+		if (o_etap.etap_wsk[wiersz - 1][kolumna] == 'M')
+			wynik = 1;
+		break;
+	case 75:
+		if (o_etap.etap_wsk[wiersz][kolumna - 1] == 'M')
+			wynik = 1;
+		break;
+	case 80:
+		if (o_etap.etap_wsk[wiersz + 1][kolumna] == 'M')
+			wynik = 1;
+		break;
+	case 77:
+		if (o_etap.etap_wsk[wiersz][kolumna + 1] == 'M')
+			wynik = 1;
+		break;
+	}
+	return wynik;
+}
 int main()
 {
 	int wybor, w_x, w_y, dlugosc_etapu, szerokosc_etapu;
@@ -176,6 +266,7 @@ int main()
 			scanf_s("%s", nazwa_etapu, 20);
 			etap_wsk = wczytaj_etap(nazwa_etapu, &Obecny_etap);
 			wyswietl_etap_c(Obecny_etap, 1);
+			sterowanie(&Obecny_etap);
 			czysc_pamiec(&Obecny_etap);
 			spr_wyboru = false;
 			break;
