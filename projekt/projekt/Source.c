@@ -29,7 +29,7 @@ void komunikat_koncowy(void)
 void wyswietl_etap_c(Etap o_etap, int czysc)
 {
 	int i, j;
-	if (czysc==1)
+	if (czysc == 1)
 		system("cls");
 	for (i = 0; i < o_etap.dlugosc; i++)
 	{
