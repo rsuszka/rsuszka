@@ -7,7 +7,7 @@ void tworz(char* nazwa_pliu)
 	FILE* plik;
 	fopen_s(&plik, nazwa_pliu, "wb");
 	fwrite(tab, sizeof(char), 5, plik);
-	fwrite(&zmienna, sizeof(int), 1, plik);
+	//fwrite(&zmienna, sizeof(int), 1, plik);
 	fclose(plik);
 }
 void czytaj(char* nazwa_pliku)
