@@ -172,14 +172,14 @@ char** wczytaj_etap(char* nazwa_etapu, Etap* o_etap)
 void sterowanie(Etap* o_etap, Gra* n_gra)
 {
 	int znak, obecne_polozenie_K, obecne_polozenie_W;
-	bool wyjscie;
+	int wyjscie;
 	obecne_polozenie_W = 1;
 	obecne_polozenie_K = 1;
-	wyjscie = false;
+	wyjscie = 0;
 	n_gra->liczba_punktow = 0;
 	wyswietl_etap_c(*o_etap, 1);
 	printf("Wynik: %d\n", n_gra->liczba_punktow);
-	while ((wyjscie == false))
+	while ((wyjscie == 0))
 	{
 		znak = _getch();
 		if (znak == 224)
