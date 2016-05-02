@@ -3,7 +3,7 @@
 #include<conio.h>
 int main()
 {
-	while (1)
+	/*while (1)
 	{
 		int znak = _getch();
 		if (znak == 224)
@@ -27,5 +27,17 @@ int main()
 			}
 		}
 	}
+	*/
+	printf("dfbsghfh\n");
+	int i = 0;
+	scanf_s("%d", &i);
+	if (i == 1)
+	{
+		
+		//pritnf("\033[2J");
+		system("clear");
+		
+	}
+	system("Pause");
 	return 0;
 }

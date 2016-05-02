@@ -7,12 +7,19 @@ wszystkie wyniki uzyskane przez graczy.*/
 #include<string.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include<math.h>
 typedef struct Etap_
 {
 	int szerokosc;
 	int dlugosc;
 	char** etap_wsk;
 } Etap;
+typedef struct Gra_
+{
+	char nazwa_etapu[20];
+	char nazwa_gracza[20];
+	int liczba_punktow;
+} Gra;
 void komunikat(void)
 {
 	printf("Witaj w grze LABIRYNY!\n");
@@ -77,15 +84,17 @@ void tworzenie_etapu(int x, int y)
 	char* bufor;
 	char nazwa_etapu[20];
 	int c;
+	int rozmiar_bufora;
+	rozmiar_bufora = (x + ceil((x * 0.2))); //bufor + 20%zapasu
 	etap = (char**)malloc(y*sizeof(char*));
-	bufor = (char*)malloc((y+1)*sizeof(char));
+	bufor = (char*)calloc(rozmiar_bufora, sizeof(char));
 	for (i = 0; i < y; i++)
 	{
 		etap[i] = (char*)malloc(x*sizeof(char));
 	}
 	for (k = 0; k < y; k++)
 	{
-		scanf_s("%s", bufor, y+1);
+		scanf_s("%s", bufor, rozmiar_bufora);
 		for (l = 0; l < x; l++)
 		{
 			etap[k][l] = bufor[l];
@@ -160,13 +169,16 @@ char** wczytaj_etap(char* nazwa_etapu, Etap* o_etap)
 	o_etap->etap_wsk = etap_tab;
 	return etap_tab;
 }
-void sterowanie(Etap* o_etap)
+void sterowanie(Etap* o_etap, Gra* n_gra)
 {
 	int znak, obecne_polozenie_K, obecne_polozenie_W;
 	bool wyjscie;
-	obecne_polozenie_W = 0;
+	obecne_polozenie_W = 1;
 	obecne_polozenie_K = 1;
 	wyjscie = false;
+	n_gra->liczba_punktow = 0;
+	wyswietl_etap_c(*o_etap, 1);
+	printf("Wynik: %d\n", n_gra->liczba_punktow);
 	while ((wyjscie == false))
 	{
 		znak = _getch();
@@ -176,9 +188,10 @@ void sterowanie(Etap* o_etap)
 			switch (znak)
 			{
 			case 72:
-				if ((obecne_polozenie_W - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] != '-'))
+				if ((obecne_polozenie_W - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_W--;
@@ -189,6 +202,7 @@ void sterowanie(Etap* o_etap)
 				if ((obecne_polozenie_K - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_K--;
@@ -196,9 +210,10 @@ void sterowanie(Etap* o_etap)
 				break;
 				//printf("lewo\n");
 			case 80:
-				if ((obecne_polozenie_W + 1 < o_etap->dlugosc) && (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] != '-'))
+				if ((obecne_polozenie_W + 1 < o_etap->dlugosc) && (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_W++;
@@ -209,6 +224,7 @@ void sterowanie(Etap* o_etap)
 				if ((obecne_polozenie_K + 1 < o_etap->szerokosc) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
 					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
 					obecne_polozenie_K++;
@@ -217,6 +233,7 @@ void sterowanie(Etap* o_etap)
 				//printf("prawo\n");
 			}
 			wyswietl_etap_c(*o_etap, 1);
+			printf("Wynik: %d\n", n_gra->liczba_punktow);
 		}
 	}
 	komunikat_koncowy();
@@ -245,6 +262,78 @@ int meta(Etap o_etap, int znak, int wiersz, int kolumna)
 	}
 	return wynik;
 }
+int punkty(Etap o_etap, int znak, int wiersz, int kolumna)
+{
+	int points = 0;
+	switch (znak)
+	{
+	case 72:
+		if (o_etap.etap_wsk[wiersz - 1][kolumna] == '*')
+			points = points + 5;
+		if (o_etap.etap_wsk[wiersz - 1][kolumna] == '.')
+			points++;
+		break;
+	case 75:
+		if (o_etap.etap_wsk[wiersz][kolumna - 1] == '*')
+			points = points + 5;
+		if (o_etap.etap_wsk[wiersz][kolumna - 1] == '.')
+			points++;
+		break;
+	case 80:
+		if (o_etap.etap_wsk[wiersz + 1][kolumna] == '*')
+			points = points + 5;
+		if (o_etap.etap_wsk[wiersz + 1][kolumna] == '.')
+			points++;
+		break;
+	case 77:
+		if (o_etap.etap_wsk[wiersz][kolumna + 1] == '*')
+			points = points + 5;
+		if (o_etap.etap_wsk[wiersz][kolumna + 1] == '.')
+			points++;
+		break;
+	}
+	return points;
+}
+void zapisz_wyniki(Gra n_gra)
+{
+	FILE* plik;
+	fopen_s(&plik, "wyniki.txt", "a");
+	if (plik == NULL)
+	{
+		perror("Blad otwarcia pliku do zapisu wynikow.\n");
+		exit(-10);
+	}
+	fprintf(plik, "%s ", n_gra.nazwa_etapu, 20);
+	fprintf(plik, "%s ", n_gra.nazwa_gracza, 20);
+	fprintf(plik, "%d\n", n_gra.liczba_punktow);
+	fclose(plik);
+}
+void wyswietl_wyniki()
+{
+	FILE* plik;
+	int c;
+	Gra bufor;
+	fopen_s(&plik, "wyniki.txt", "r");
+	if (plik == NULL)
+	{
+		perror("Blad otwarcia pliku z wynikami");
+		exit(-10);
+	}
+	printf("Nazwa etapu/Nazwa gracza/ilosc punktow\n");
+	while ((c = fgetc(plik)) != EOF)
+	{
+		fseek(plik, -1, SEEK_CUR);
+		fscanf_s(plik, "%s", bufor.nazwa_etapu, 20);
+		fscanf_s(plik, "%s", bufor.nazwa_gracza, 20);
+		fscanf_s(plik, "%d", &bufor.liczba_punktow);
+		printf("%s/", bufor.nazwa_etapu, 20);
+		printf("%s/", bufor.nazwa_gracza, 20);
+		printf("%d\n", bufor.liczba_punktow);
+		fseek(plik, 2, SEEK_CUR);
+	}
+	fclose(plik);
+	
+}
 int main()
 {
 	int wybor, w_x, w_y, dlugosc_etapu, szerokosc_etapu;
@@ -252,6 +341,7 @@ int main()
 	char nazwa_etapu[20];
 	char** etap_wsk;
 	Etap Obecny_etap;
+	Gra Nowa_gra;
 	komunikat();
 	while (spr_wyboru == true)
 	{
@@ -259,13 +349,16 @@ int main()
 		switch (wybor)
 		{
 		case 1:
-			printf("Wybrales nowa gre\n");
+			printf("Wybrales nowa gre.\n");
+			printf("Podaj swoje imie.\n");
+			scanf_s("%s", Nowa_gra.nazwa_gracza, 20);
+			printf("---------------\n");
 			wyswietl_liste_etapow();
 			printf("Wybierz etap z powyzszej listy.\n");
-			scanf_s("%s", nazwa_etapu, 20);
-			etap_wsk = wczytaj_etap(nazwa_etapu, &Obecny_etap);
-			wyswietl_etap_c(Obecny_etap, 1);
-			sterowanie(&Obecny_etap);
+			scanf_s("%s", &Nowa_gra.nazwa_etapu, 20);
+			etap_wsk = wczytaj_etap(Nowa_gra.nazwa_etapu, &Obecny_etap);
+			sterowanie(&Obecny_etap, &Nowa_gra);
+			zapisz_wyniki(Nowa_gra);
 			czysc_pamiec(&Obecny_etap);
 			spr_wyboru = false;
 			break;
@@ -280,6 +373,7 @@ int main()
 			break;
 		case 3:
 			printf("Wybrales tabele wynikow\n");
+			wyswietl_wyniki();
 			spr_wyboru = false;
 			break;
 		case 4:
