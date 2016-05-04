@@ -16,7 +16,6 @@ INTERACT : btree
 REDIRECT : btree <btree.dat
 HELP     : h(elp; q(uit; i(nsert x; d(elete x; f(ind x; p(rint;  A(scending; Descending; C(ount
 NOTE     : `x' is a single character
-EXERCISES: Ex1, Ex2, Ex10
 */
 
 #include <stdio.h>
@@ -36,8 +35,8 @@ typedef int Bool;
 
 typedef struct node_tag {
 	int count;
-	Key_type key[MAX+1]; //max+1
-	struct node_tag *branch[MAX + 1];
+	Key_type key[MAX+1];
+	struct node_tag *branch[MAX+1];
 }Node_type;
 
 int step = 0;
@@ -227,43 +226,6 @@ void PrintAllNodes(Node_type *root, FILE* zapisywanie)
 	}
 }
 
-void ListNode(int depth, int cnt, Node_type *p)
-{
-	int i;
-
-	printf("%d %d ", depth, cnt);
-	for (i = 1; i <= p->count; i++)
-		printf("%c ", p->key[i]);
-	printf("\n");
-}
-
-void ListAllNodes(Node_type *root)
-{
-	int i, j, cnt;
-
-	if (root != NULL)
-	{
-		ListNode(0, 1, root);
-		cnt = 1;
-		for (i = 0; i <= root->count; i++)
-			if (root->branch[i] != NULL)
-				ListNode(1, cnt++, root->branch[i]);
-
-		cnt = 1;
-		for (i = 0; i <= root->count; i++)
-			if (root->branch[i] != NULL) {
-				for (j = 0; j <= root->branch[i]->count; j++)
-					if (root->branch[i]->branch[j] != NULL)
-						ListNode(2, cnt++, root->branch[i]->branch[j]);
-
-				cnt += MAX - root->branch[i]->count;
-			}
-	}
-	printf("-1\n");
-	fflush(stdout);
-}
-
-
 /* SeqSearch: SEQUENTIAL SEARCH - searches keys in node p for target; returns location k of target, or branch on which to continue search */
 Bool SeqSearch(Key_type target, Node_type *p, int *k)
 {
@@ -316,7 +278,7 @@ void Split(Key_type x, Node_type *xr, Node_type *p, int k, Key_type *y, Node_typ
 		(*yr)->key[i - median] = p->key[i];
 		(*yr)->branch[i - median] = p->branch[i];
 	}
-	(*yr)->count = (MAX-1) - median; //////////////////////////////////
+	(*yr)->count = MAX - median; //////////////////////////////////
 	p->count = median;
 	if (k <= MIN)	/* Push in the new key. */
 		PushIn(x, xr, p, k);
