@@ -337,14 +337,13 @@ void wyswietl_wyniki()
 int main()
 {
 	int wybor, w_x, w_y, dlugosc_etapu, szerokosc_etapu;
-	bool spr_wyboru = true;
 	char nazwa_etapu[20];
 	char** etap_wsk;
 	Etap Obecny_etap;
 	Gra Nowa_gra;
-	komunikat();
-	while (spr_wyboru == true)
+	while (1)
 	{
+		komunikat();
 		scanf_s("%d", &wybor);
 		switch (wybor)
 		{
@@ -360,7 +359,6 @@ int main()
 			sterowanie(&Obecny_etap, &Nowa_gra);
 			zapisz_wyniki(Nowa_gra);
 			czysc_pamiec(&Obecny_etap);
-			spr_wyboru = false;
 			break;
 		case 2:
 			printf("Wybrales tworzenie etapow\n");
@@ -369,19 +367,15 @@ int main()
 			printf("Podaj dlugosc mapy.\n");
 			scanf_s("%d", &w_y);
 			tworzenie_etapu(w_x, w_y);
-			spr_wyboru = false;
 			break;
 		case 3:
 			printf("Wybrales tabele wynikow\n");
 			wyswietl_wyniki();
-			spr_wyboru = false;
 			break;
 		case 4:
-			spr_wyboru = false;
-			break;
+			exit(0);
 		default:
 			printf("Wybrales bledna opcje. Sprobuj ponownie\n");
-			spr_wyboru = true;
 			break;
 		}
 	}

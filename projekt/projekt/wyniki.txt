@@ -1,2 +1,3 @@
 Etap1.txt Rafal 2
 Etap01.txt Rafal 63
+Etap1.txt Rafal 2
