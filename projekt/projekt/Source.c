@@ -45,13 +45,6 @@ void wyswietl_etap_c(Etap o_etap, int czysc)
 		printf("\n");
 	}
 }
-void czysc_pamiec(Etap* o_etap)
-{
-	int i;
-	for (i = 0; i < o_etap->dlugosc; i++) //zwolnienie pamieci
-		free(o_etap->etap_wsk[i]);
-	free(o_etap->etap_wsk);
-}
 void wyswietl_liste_etapow(void)
 {
 	FILE* log_etapow;
@@ -72,6 +65,13 @@ void wyswietl_liste_etapow(void)
 		}
 		fclose(log_etapow);
 	}
+}
+void czysc_pamiec(Etap* o_etap)
+{
+	int i;
+	for (i = 0; i < o_etap->dlugosc; i++) //zwolnienie pamieci
+		free(o_etap->etap_wsk[i]);
+	free(o_etap->etap_wsk);
 }
 void tworzenie_etapu(int x, int y)
 {
@@ -169,12 +169,60 @@ char** wczytaj_etap(char* nazwa_etapu, Etap* o_etap)
 	o_etap->etap_wsk = etap_tab;
 	return etap_tab;
 }
+int znajdz_a_K(Etap o_etap)
+{
+	int i, j;
+	for (i = 0; i < o_etap.dlugosc; i++)
+	{
+		for (j = 0; j < o_etap.szerokosc; j++)
+		{
+			if (o_etap.etap_wsk[i][j] == 'a')
+				return j;
+		}
+	}
+}
+int znajdz_a_W(Etap o_etap)
+{
+	int i, j;
+	for (i = 0; i < o_etap.dlugosc; i++)
+	{
+		for (j = 0; j < o_etap.szerokosc; j++)
+		{
+			if (o_etap.etap_wsk[i][j] == 'a')
+				return i;
+		}
+	}
+}
+void ruch_w_gore(Etap* o_etap, int* obecne_polozenie_W, int* obecne_polozenie_K)
+{
+	o_etap->etap_wsk[*(obecne_polozenie_W) - 1][*obecne_polozenie_K] = o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K];
+	o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K] = ' ';
+	*(obecne_polozenie_W) = *(obecne_polozenie_W)-1;
+}
+void ruch_w_dol(Etap* o_etap, int* obecne_polozenie_W, int* obecne_polozenie_K)
+{
+	o_etap->etap_wsk[*(obecne_polozenie_W) + 1][*obecne_polozenie_K] = o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K];
+	o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K] = ' ';
+	*(obecne_polozenie_W) = *(obecne_polozenie_W)+1;
+}
+void ruch_w_lewo(Etap* o_etap, int* obecne_polozenie_W, int* obecne_polozenie_K)
+{
+	o_etap->etap_wsk[*obecne_polozenie_W][*(obecne_polozenie_K) - 1] = o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K];
+	o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K] = ' ';
+	*(obecne_polozenie_K) = *(obecne_polozenie_K)-1;
+}
+void ruch_w_prawo(Etap* o_etap, int* obecne_polozenie_W, int* obecne_polozenie_K)
+{
+	o_etap->etap_wsk[*obecne_polozenie_W][*(obecne_polozenie_K) + 1] = o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K];
+	o_etap->etap_wsk[*obecne_polozenie_W][*obecne_polozenie_K] = ' ';
+	*(obecne_polozenie_K) = *(obecne_polozenie_K)+1;
+}
 void sterowanie(Etap* o_etap, Gra* n_gra)
 {
 	int znak, obecne_polozenie_K, obecne_polozenie_W;
 	int wyjscie;
-	obecne_polozenie_W = 1;
-	obecne_polozenie_K = 1;
+	obecne_polozenie_W = znajdz_a_W(*o_etap);
+	obecne_polozenie_K = znajdz_a_K(*o_etap);
 	wyjscie = 0;
 	n_gra->liczba_punktow = 0;
 	wyswietl_etap_c(*o_etap, 1);
@@ -192,45 +240,33 @@ void sterowanie(Etap* o_etap, Gra* n_gra)
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
-					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
-					obecne_polozenie_W--;
+					ruch_w_gore(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
 				break;
-				//printf("gora\n");
 			case 75:
 				if ((obecne_polozenie_K - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
-					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
-					obecne_polozenie_K--;
+					ruch_w_lewo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
 				break;
-				//printf("lewo\n");
 			case 80:
 				if ((obecne_polozenie_W + 1 < o_etap->dlugosc) && (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
-					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
-					obecne_polozenie_W++;
+					ruch_w_dol(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
 				break;
-				//printf("dol\n");
 			case 77:
 				if ((obecne_polozenie_K + 1 < o_etap->szerokosc) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] = o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K];
-					o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
-					obecne_polozenie_K++;
+					ruch_w_prawo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
 				break;
-				//printf("prawo\n");
 			}
 			wyswietl_etap_c(*o_etap, 1);
 			printf("Wynik: %d\n", n_gra->liczba_punktow);
@@ -308,7 +344,7 @@ void zapisz_wyniki(Gra n_gra)
 	fprintf(plik, "%d\n", n_gra.liczba_punktow);
 	fclose(plik);
 }
-void wyswietl_wyniki()
+void wyswietl_wyniki(void)
 {
 	FILE* plik;
 	int c;
@@ -359,6 +395,7 @@ int main()
 			sterowanie(&Obecny_etap, &Nowa_gra);
 			zapisz_wyniki(Nowa_gra);
 			czysc_pamiec(&Obecny_etap);
+			printf("\n");
 			break;
 		case 2:
 			printf("Wybrales tworzenie etapow\n");
@@ -367,15 +404,17 @@ int main()
 			printf("Podaj dlugosc mapy.\n");
 			scanf_s("%d", &w_y);
 			tworzenie_etapu(w_x, w_y);
+			printf("\n");
 			break;
 		case 3:
 			printf("Wybrales tabele wynikow\n");
 			wyswietl_wyniki();
+			printf("\n");
 			break;
 		case 4:
 			exit(0);
 		default:
-			printf("Wybrales bledna opcje. Sprobuj ponownie\n");
+			printf("Wybrales bledna opcje. Sprobuj ponownie\n\n");
 			break;
 		}
 	}
