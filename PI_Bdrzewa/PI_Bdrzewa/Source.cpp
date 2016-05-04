@@ -23,7 +23,7 @@ NOTE     : `x' is a single character
 #include <algorithm>
 
 #define MAX 4
-#define MIN 1
+#define MIN 2
 #define MAXD 10
 #define MAXWD 50
 #define FALSE 0
