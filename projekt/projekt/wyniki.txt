@@ -4,3 +4,6 @@ Etap1.txt Rafal 2
 Etap01.txt Rafal 46
 Etap01.txt Rafal 41
 Etap02.txt Rafal 11
+Etap01.txt Rafal 36
+Etap02.txt Rafal 2
+Etap01.txt Rafal 47

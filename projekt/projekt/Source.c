@@ -8,6 +8,7 @@ wszystkie wyniki uzyskane przez graczy.*/
 #include<stdlib.h>
 #include<stdbool.h>
 #include<math.h>
+#include<time.h>
 typedef struct Etap_
 {
 	int szerokosc;
@@ -239,6 +240,7 @@ void sterowanie(Etap* o_etap, Gra* n_gra)
 				if ((obecne_polozenie_W - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					ruch_przeciwnikow(o_etap);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					ruch_w_gore(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
@@ -247,6 +249,7 @@ void sterowanie(Etap* o_etap, Gra* n_gra)
 				if ((obecne_polozenie_K - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					ruch_przeciwnikow(o_etap);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					ruch_w_lewo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
@@ -255,6 +258,7 @@ void sterowanie(Etap* o_etap, Gra* n_gra)
 				if ((obecne_polozenie_W + 1 < o_etap->dlugosc) && (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					ruch_przeciwnikow(o_etap);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					ruch_w_dol(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
@@ -263,6 +267,7 @@ void sterowanie(Etap* o_etap, Gra* n_gra)
 				if ((obecne_polozenie_K + 1 < o_etap->szerokosc) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] != '|'))
 				{
 					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+					ruch_przeciwnikow(o_etap);
 					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
 					ruch_w_prawo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
 				}
@@ -330,6 +335,58 @@ int punkty(Etap o_etap, int znak, int wiersz, int kolumna)
 	}
 	return points;
 }
+int ruch_przeciwnikow(Etap* o_etap) //coœ sie psuje
+{
+	int i, j, itmp, jtmp, p_blok_W, p_blok_K;
+	int ziarno;
+	ziarno = rand() % 4;
+	p_blok_K = o_etap->szerokosc + 1;
+	p_blok_W = o_etap->dlugosc + 1;
+	for (i = 0; i < o_etap->dlugosc; i++)
+	{
+		for (j = 0; j < o_etap->szerokosc; j++)
+		{
+			if (o_etap->etap_wsk[i][j] == 'x')
+			{
+				itmp = i;
+				jtmp = j;
+				switch (ziarno)
+				{
+				case 0:
+					if ((i - 1 >= 0) && (o_etap->etap_wsk[i - 1][j] != '|') && (o_etap->etap_wsk[i - 1][j] != '*')  && (o_etap->etap_wsk[i - 1][j] != 'x'))
+					{
+						ruch_w_gore(o_etap, &itmp, &jtmp);
+						o_etap->etap_wsk[i][j] = '.';
+					}
+					break;
+				case 1:
+					if ((j - 1 >= 0) && (o_etap->etap_wsk[i][j - 1] != '|') && (o_etap->etap_wsk[i][j - 1] != '*') && (o_etap->etap_wsk[i][j - 1] != 'x'))
+					{
+						ruch_w_lewo(o_etap, &itmp, &jtmp);
+						o_etap->etap_wsk[i][j] = '.';
+					}
+					break;
+				case 2:
+					if ((i + 1 <= o_etap->dlugosc) && (p_blok_W != i) && (o_etap->etap_wsk[i + 1][j] != '|') && (o_etap->etap_wsk[i + 1][j] != '*') && (o_etap->etap_wsk[i + 1][j] != 'x'))
+					{
+						ruch_w_dol(o_etap, &itmp, &jtmp);
+						o_etap->etap_wsk[i][j] = '.';
+						p_blok_W = i + 1;
+					}
+					break;
+				case 3:
+					if ((j + 1 <= o_etap->szerokosc) && (p_blok_K != j) && (o_etap->etap_wsk[i][j + 1] != '|') && (o_etap->etap_wsk[i][j + 1] != '*') && (o_etap->etap_wsk[i][j + 1] != 'x'))
+					{
+						ruch_w_prawo(o_etap, &itmp, &jtmp);
+						o_etap->etap_wsk[i][j] = '.';
+						p_blok_K = j + 1;
+					}
+					break;
+				}
+			}
+		}
+	}
+}
 void zapisz_wyniki(Gra n_gra)
 {
 	FILE* plik;
@@ -372,6 +429,7 @@ void wyswietl_wyniki(void)
 }
 int main()
 {
+	srand(time(NULL));
 	int wybor, w_x, w_y, dlugosc_etapu, szerokosc_etapu;
 	char nazwa_etapu[20];
 	char** etap_wsk;
