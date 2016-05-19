@@ -34,6 +34,10 @@ void komunikat_koncowy(void)
 {
 	printf("Ukonczyles etap!\n");
 }
+void komunikat_koncowy2(void)
+{
+	printf("GAME OVER\n");
+}
 void wyswietl_etap_c(Etap o_etap, int czysc)
 {
 	int i, j;
@@ -239,45 +243,82 @@ void sterowanie(Etap* o_etap, Gra* n_gra)
 			case 72:
 				if ((obecne_polozenie_W - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] != '|'))
 				{
-					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_przeciwnikow(o_etap);
-					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_w_gore(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					if (o_etap->etap_wsk[obecne_polozenie_W - 1][obecne_polozenie_K] == 'x')
+					{
+						o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+						n_gra->liczba_punktow = 0;
+						wyjscie = -1;
+					}
+					else
+					{
+						wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						ruch_w_gore(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					}
 				}
 				break;
 			case 75:
 				if ((obecne_polozenie_K - 1 >= 0) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] != '|'))
 				{
-					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_przeciwnikow(o_etap);
-					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_w_lewo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					if (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K - 1] == 'x')
+					{
+						o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+						n_gra->liczba_punktow = 0;
+						wyjscie = -1;
+					}
+					else
+					{
+						wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						ruch_w_lewo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					}
 				}
 				break;
 			case 80:
 				if ((obecne_polozenie_W + 1 < o_etap->dlugosc) && (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] != '|'))
 				{
-					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_przeciwnikow(o_etap);
-					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_w_dol(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					if (o_etap->etap_wsk[obecne_polozenie_W + 1][obecne_polozenie_K] == 'x')
+					{
+						o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+						n_gra->liczba_punktow = 0;
+						wyjscie = -1;
+					}
+					else
+					{
+						wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						ruch_w_dol(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					}
 				}
 				break;
 			case 77:
 				if ((obecne_polozenie_K + 1 < o_etap->szerokosc) && (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] != '|'))
 				{
-					wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_przeciwnikow(o_etap);
-					n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
-					ruch_w_prawo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					if (o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K + 1] == 'x')
+					{
+						o_etap->etap_wsk[obecne_polozenie_W][obecne_polozenie_K] = ' ';
+						n_gra->liczba_punktow = 0;
+						wyjscie = -1;
+					}
+					else
+					{
+						wyjscie = meta(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						n_gra->liczba_punktow = n_gra->liczba_punktow + punkty(*o_etap, znak, obecne_polozenie_W, obecne_polozenie_K);
+						ruch_w_prawo(o_etap, &obecne_polozenie_W, &obecne_polozenie_K);
+					}
 				}
 				break;
 			}
+			if (wyjscie == 0)
+				wyjscie = ruch_przeciwnikow(o_etap, n_gra);
 			wyswietl_etap_c(*o_etap, 1);
 			printf("Wynik: %d\n", n_gra->liczba_punktow);
 		}
 	}
-	komunikat_koncowy();
+	if (wyjscie == 1) //ukoñczenie gry
+		komunikat_koncowy();
+	if (wyjscie == -1) //pora¿ka
+		komunikat_koncowy2();
 }
 int meta(Etap o_etap, int znak, int wiersz, int kolumna)
 {
@@ -335,10 +376,10 @@ int punkty(Etap o_etap, int znak, int wiersz, int kolumna)
 	}
 	return points;
 }
-int ruch_przeciwnikow(Etap* o_etap) //coœ sie psuje
+int ruch_przeciwnikow(Etap* o_etap, Gra* n_gra)
 {
 	int i, j, itmp, jtmp, p_blok_W, p_blok_K;
-	int ziarno;
+	int ziarno = 55;
 	ziarno = rand() % 4;
 	p_blok_K = o_etap->szerokosc + 1;
 	p_blok_W = o_etap->dlugosc + 1;
@@ -355,6 +396,13 @@ int ruch_przeciwnikow(Etap* o_etap) //coœ sie psuje
 				case 0:
 					if ((i - 1 >= 0) && (o_etap->etap_wsk[i - 1][j] != '|') && (o_etap->etap_wsk[i - 1][j] != '*')  && (o_etap->etap_wsk[i - 1][j] != 'x'))
 					{
+						if (o_etap->etap_wsk[i - 1][j] == 'a')
+						{
+							ruch_w_gore(o_etap, &itmp, &jtmp);
+							o_etap->etap_wsk[i][j] = '.';
+							n_gra->liczba_punktow = 0;
+							return -1;
+						}
 						ruch_w_gore(o_etap, &itmp, &jtmp);
 						o_etap->etap_wsk[i][j] = '.';
 					}
@@ -362,6 +410,13 @@ int ruch_przeciwnikow(Etap* o_etap) //coœ sie psuje
 				case 1:
 					if ((j - 1 >= 0) && (o_etap->etap_wsk[i][j - 1] != '|') && (o_etap->etap_wsk[i][j - 1] != '*') && (o_etap->etap_wsk[i][j - 1] != 'x'))
 					{
+						if (o_etap->etap_wsk[i][j - 1] == 'a')
+						{
+							ruch_w_lewo(o_etap, &itmp, &jtmp);
+							o_etap->etap_wsk[i][j] = '.';
+							n_gra->liczba_punktow = 0;
+							return -1;
+						}
 						ruch_w_lewo(o_etap, &itmp, &jtmp);
 						o_etap->etap_wsk[i][j] = '.';
 					}
@@ -369,6 +424,13 @@ int ruch_przeciwnikow(Etap* o_etap) //coœ sie psuje
 				case 2:
 					if ((i + 1 <= o_etap->dlugosc) && (p_blok_W != i) && (o_etap->etap_wsk[i + 1][j] != '|') && (o_etap->etap_wsk[i + 1][j] != '*') && (o_etap->etap_wsk[i + 1][j] != 'x'))
 					{
+						if (o_etap->etap_wsk[i + 1][j] == 'a')
+						{
+							ruch_w_dol(o_etap, &itmp, &jtmp);
+							o_etap->etap_wsk[i][j] = '.';
+							n_gra->liczba_punktow = 0;
+							return -1;
+						}
 						ruch_w_dol(o_etap, &itmp, &jtmp);
 						o_etap->etap_wsk[i][j] = '.';
 						p_blok_W = i + 1;
@@ -377,6 +439,13 @@ int ruch_przeciwnikow(Etap* o_etap) //coœ sie psuje
 				case 3:
 					if ((j + 1 <= o_etap->szerokosc) && (p_blok_K != j) && (o_etap->etap_wsk[i][j + 1] != '|') && (o_etap->etap_wsk[i][j + 1] != '*') && (o_etap->etap_wsk[i][j + 1] != 'x'))
 					{
+						if (o_etap->etap_wsk[i][j + 1] == 'a')
+						{
+							ruch_w_prawo(o_etap, &itmp, &jtmp);
+							o_etap->etap_wsk[i][j] = '.';
+							n_gra->liczba_punktow = 0;
+							return -1;
+						}
 						ruch_w_prawo(o_etap, &itmp, &jtmp);
 						o_etap->etap_wsk[i][j] = '.';
 						p_blok_K = j + 1;
@@ -386,6 +455,7 @@ int ruch_przeciwnikow(Etap* o_etap) //coœ sie psuje
 			}
 		}
 	}
+	return 0;
 }
 void zapisz_wyniki(Gra n_gra)
 {
