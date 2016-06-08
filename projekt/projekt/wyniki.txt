@@ -18,3 +18,8 @@ Etap01.txt Rafal 0
 Etap01.txt Rafal 92
 Etap01.txt Rafal 0
 Etap01.txt Rafal 0
+Etap01.txt Rafal 62
+Etap1.txt Rafal 2
+Etap03.txt Rafal 0
+Etap02.txt Rafal 10
+Etap03.txt Rafal 0
