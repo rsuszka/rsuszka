@@ -1,15 +1,27 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<conio.h>
-int main(int argc, char* argv[])
+int main()
 {
-	int A[10][5];
-	double B[6] = { 1,2,3,4,5,6 };
-	int p;
-	int *w;
-	w = &(B[2]);
-	p = &(B[0]);
-	printf("%d %d\n", w, p);
+	FILE* odczyt;
+	FILE* zapis;
+	int bufor, dlugosc;
+	bufor = 0;
+	fopen_s(&odczyt, "abc.dat", "rb");
+	if (odczyt == NULL)
+		printf("Brak pliku wejsciowego\n");
+	else
+	{
+		fopen_s(&zapis, "wynik.txt", "w");
+		printf("Podaj ilosc liczb w pliku: ");
+		scanf_s("%d", &dlugosc);
+		for (int i = 0; i < dlugosc; i++)
+		{
+			fread(&bufor, sizeof(int), 1, odczyt);
+			fprintf(zapis, "%d\n", bufor);
+		}
+		fclose(odczyt);
+		fclose(zapis);
+	}
 	system("Pause");
 	return 0;
 }

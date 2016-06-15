@@ -10,9 +10,9 @@ wszystkie wyniki uzyskane przez graczy.*/
 #include<time.h>
 typedef struct Etap_ //struktura przechowuj¹ca etap w pamiêci
 {
-	int szerokosc;
-	int dlugosc;
-	char** etap_wsk;
+	int szerokosc; //szerokoœæ etapu
+	int dlugosc; //d³gugoœæ etapu
+	char** etap_wsk; //wskaznik na etap
 } Etap;
 typedef struct Gra_ //struktura przechowuj¹ca informacje o obecnej grze w pamiêci
 {
@@ -41,7 +41,7 @@ void instrukcja_tworzenia_etapu(void) //intrukcja tworzenia etapow
 	printf("- ('x') - przeciwnicy\n");
 	printf("- ('.') - przedmiot za 1 punkt\n");
 	printf("- ('*') - przedmiot na 5 punktow\n");
-	printf("- ('M') - meta, symblolu mozna uzyc tylko raz!\n");
+	printf("- ('M') - meta, symbolu mozna uzyc tylko raz!\n");
 	printf("Na samym koncu nalezy wybrac nazwe etapu (musi konczyc sie na '.txt'). Maksymalna dlugosc nazwy to 20 znakow\n");
 }
 void komunikat(void) //komunikat dotyczacy interfejsu programu
@@ -205,6 +205,7 @@ int znajdz_a_K(Etap o_etap) //funkcja wyszukuj¹ca kolumny w której znajduje siê 
 				return j; //zwrócenie numeru kolumny
 		}
 	}
+	return 0; //wzrócenienie 0 gdy postaæ nie znajduje siê w tablicy
 }
 int znajdz_a_W(Etap o_etap) //funkcja wyszukuj¹ca wiersza w której znajduje siê postaæ
 {
@@ -217,6 +218,7 @@ int znajdz_a_W(Etap o_etap) //funkcja wyszukuj¹ca wiersza w której znajduje siê 
 				return i; //zwrócenie numeru wiersza
 		}
 	}
+	return 0; //wzrócenienie 0 gdy postaæ nie znajduje siê w tablicy
 }
 void ruch_w_gore(Etap* o_etap, int* obecne_polozenie_W, int* obecne_polozenie_K) //funkcja przesuwaj¹ca element o 1 pole w górê
 {
@@ -415,7 +417,7 @@ int ruch_przeciwnikow(Etap* o_etap, Gra* n_gra) //funkcja przesuwaj¹ca przeciwnk
 				switch (ziarno) //wybranie kierunku ruchu
 				{
 				case 0: //ruch w górê
-					if ((i - 1 >= 0) && (o_etap->etap_wsk[i - 1][j] != '|') && (o_etap->etap_wsk[i - 1][j] != '*')  && (o_etap->etap_wsk[i - 1][j] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
+					if ((i - 1 >= 0) && (o_etap->etap_wsk[i - 1][j] != '|') && (o_etap->etap_wsk[i - 1][j] != '*') && (o_etap->etap_wsk[i - 1][j] != 'M') && (o_etap->etap_wsk[i - 1][j] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
 					{
 						if (o_etap->etap_wsk[i - 1][j] == 'a') //wykrycie postaci na polu do ruchu
 						{
@@ -428,8 +430,8 @@ int ruch_przeciwnikow(Etap* o_etap, Gra* n_gra) //funkcja przesuwaj¹ca przeciwnk
 						o_etap->etap_wsk[i][j] = '.';
 					}
 					break;
-				case 1: //ruch w lewe
-					if ((j - 1 >= 0) && (o_etap->etap_wsk[i][j - 1] != '|') && (o_etap->etap_wsk[i][j - 1] != '*') && (o_etap->etap_wsk[i][j - 1] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
+				case 1: //ruch w lewo
+					if ((j - 1 >= 0) && (o_etap->etap_wsk[i][j - 1] != '|') && (o_etap->etap_wsk[i][j - 1] != '*') && (o_etap->etap_wsk[i][j - 1] != 'M') &&  (o_etap->etap_wsk[i][j - 1] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
 					{
 						if (o_etap->etap_wsk[i][j - 1] == 'a') //wykrycie postaci na polu do ruchu
 						{
@@ -443,7 +445,7 @@ int ruch_przeciwnikow(Etap* o_etap, Gra* n_gra) //funkcja przesuwaj¹ca przeciwnk
 					}
 					break;
 				case 2: //ruch w dó³
-					if ((i + 1 <= o_etap->dlugosc) && (p_blok_W != i) && (o_etap->etap_wsk[i + 1][j] != '|') && (o_etap->etap_wsk[i + 1][j] != '*') && (o_etap->etap_wsk[i + 1][j] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
+					if ((i + 1 <= o_etap->dlugosc) && (p_blok_W != i) && (o_etap->etap_wsk[i + 1][j] != '|') && (o_etap->etap_wsk[i + 1][j] != '*') && (o_etap->etap_wsk[i + 1][j] != 'M') && (o_etap->etap_wsk[i + 1][j] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
 					{
 						if (o_etap->etap_wsk[i + 1][j] == 'a') //wykrycie postaci na polu do ruchu
 						{
@@ -458,7 +460,7 @@ int ruch_przeciwnikow(Etap* o_etap, Gra* n_gra) //funkcja przesuwaj¹ca przeciwnk
 					}
 					break;
 				case 3: //ruch w prawo
-					if ((j + 1 <= o_etap->szerokosc) && (p_blok_K != j) && (o_etap->etap_wsk[i][j + 1] != '|') && (o_etap->etap_wsk[i][j + 1] != '*') && (o_etap->etap_wsk[i][j + 1] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
+					if ((j + 1 <= o_etap->szerokosc) && (p_blok_K != j) && (o_etap->etap_wsk[i][j + 1] != '|') && (o_etap->etap_wsk[i][j + 1] != '*') && (o_etap->etap_wsk[i][j + 1] != 'M') && (o_etap->etap_wsk[i][j + 1] != 'x')) //sprawdzenie mo¿liwoœci ruchu na dane pole
 					{
 						if (o_etap->etap_wsk[i][j + 1] == 'a') //wykrycie postaci na polu do ruchu
 						{
@@ -551,6 +553,8 @@ int main()
 				czysc_pamiec(&Obecny_etap);
 				printf("\n");
 			}
+			if (wyjscie == -1)
+				wyjscie = 1;
 			break;
 		case 2: //tworzenie etapu
 			printf("Wybrales tworzenie etapow\n");
