@@ -8,6 +8,7 @@ wszystkie wyniki uzyskane przez graczy.*/
 #include<stdlib.h>
 #include<math.h>
 #include<time.h>
+#define MAX_DLUGOSC 20 //wielkoœæ tablic statycznych (do przechowywania imienia oraz nazwy etapu)
 typedef struct Etap_ //struktura przechowuj¹ca etap w pamiêci
 {
 	int szerokosc; //szerokoœæ etapu
@@ -16,8 +17,8 @@ typedef struct Etap_ //struktura przechowuj¹ca etap w pamiêci
 } Etap;
 typedef struct Gra_ //struktura przechowuj¹ca informacje o obecnej grze w pamiêci
 {
-	char nazwa_etapu[20];
-	char nazwa_gracza[20];
+	char nazwa_etapu[MAX_DLUGOSC];
+	char nazwa_gracza[MAX_DLUGOSC];
 	int liczba_punktow;
 } Gra;
 void instrukcja_do_gry(void) //instrukcja obs³ugi gry
@@ -76,7 +77,7 @@ void wyswietl_etap_c(Etap o_etap, int czysc) //funkcja wyœwietlaj¹ca pojedyñczy 
 void wyswietl_liste_etapow(void) //funckja wyœwietlaj¹ca listê etapów znajduj¹c¹ siê w pliku (je¿eli plik nie istnieje zostaje utworzony)
 {
 	FILE* log_etapow;
-	char nazwa_etapu[20]; //tablica przechowujaca tymczasowo nazwê etapu
+	char nazwa_etapu[MAX_DLUGOSC]; //tablica przechowujaca tymczasowo nazwê etapu
 	int c;
 	fopen_s(&log_etapow, "log.txt", "r");
 	if (log_etapow == NULL)
@@ -87,8 +88,8 @@ void wyswietl_liste_etapow(void) //funckja wyœwietlaj¹ca listê etapów znajduj¹c¹
 		while ((c = fgetc(log_etapow)) != EOF) //przeszukiwanie pliku a¿ do znaku koñca pliku
 		{
 			fseek(log_etapow, -1, SEEK_CUR);
-			fscanf_s(log_etapow, "%s", nazwa_etapu, 20); //wczytanie elementu do tablicy
-			printf("%s\n", nazwa_etapu, 20); //wyœwietlenie elementu
+			fscanf_s(log_etapow, "%s", nazwa_etapu, MAX_DLUGOSC); //wczytanie elementu do tablicy
+			printf("%s\n", nazwa_etapu, MAX_DLUGOSC); //wyœwietlenie elementu
 			fseek(log_etapow, 1, SEEK_CUR);
 		}
 		fclose(log_etapow);
@@ -109,7 +110,7 @@ void tworzenie_etapu(int x, int y) //funkcja tworz¹ca etap o podanych wymiarach
 	int i,j,k,l,m,n; //liczniki petli
 	char** etap;
 	char* bufor;
-	char nazwa_etapu[20];
+	char nazwa_etapu[MAX_DLUGOSC];
 	int rozmiar_bufora; //bufor wczytuj¹cy dane
 	rozmiar_bufora = (x + ceil((x * 0.2))); //bufor + 20%zapasu
 	etap = (char**)malloc(y*sizeof(char*));
@@ -129,7 +130,7 @@ void tworzenie_etapu(int x, int y) //funkcja tworz¹ca etap o podanych wymiarach
 	free(bufor);
 	wyswietl_liste_etapow();
 	printf("Podaj nazwe etapu (Nie dluzsza niz 20 znakow): ");
-	scanf_s("%s", nazwa_etapu, 20);
+	scanf_s("%s", nazwa_etapu, MAX_DLUGOSC);
 	fopen_s(&zapis_etapu, nazwa_etapu, "w");
 	if (zapis_etapu == NULL) //sprawdzenie poprawnoœci otwarcia pliku do zapisu etapu
 	{
@@ -152,7 +153,7 @@ void tworzenie_etapu(int x, int y) //funkcja tworz¹ca etap o podanych wymiarach
 		perror("blad otwarcia pliku z logiem etapow"); 
 		exit(-10);
 	}
-	fprintf(log_etapow, "%s", nazwa_etapu, 20); //aktualizacja logu
+	fprintf(log_etapow, "%s", nazwa_etapu, MAX_DLUGOSC); //aktualizacja logu
 	fprintf(log_etapow, " ");
 	fclose(log_etapow);
 	printf("Zapisano nastepujacy etap:\n");
@@ -489,8 +490,8 @@ void zapisz_wyniki(Gra n_gra) //funkcja zapisuj¹ca wyniki do pliku
 		perror("Blad otwarcia pliku do zapisu wynikow.\n");
 		exit(-10);
 	}
-	fprintf(plik, "%s ", n_gra.nazwa_etapu, 20); //zapis nazwy etapu
-	fprintf(plik, "%s ", n_gra.nazwa_gracza, 20); //zapis nazwy gracza
+	fprintf(plik, "%s ", n_gra.nazwa_etapu, MAX_DLUGOSC); //zapis nazwy etapu
+	fprintf(plik, "%s ", n_gra.nazwa_gracza, MAX_DLUGOSC); //zapis nazwy gracza
 	fprintf(plik, "%d\n", n_gra.liczba_punktow); //zapis liczby punktów
 	fclose(plik);
 }
@@ -510,11 +511,11 @@ void wyswietl_wyniki(void) //funkcja wyœwietlaj¹ca wyniki zapisane w pliku
 		while ((c = fgetc(plik)) != EOF) //przeszukiwanie pliku a¿ do znaku koñca pliku
 		{
 			fseek(plik, -1, SEEK_CUR);
-			fscanf_s(plik, "%s", bufor.nazwa_etapu, 20); //wczytanie wyników do zmiennej pomocniczej
-			fscanf_s(plik, "%s", bufor.nazwa_gracza, 20);
+			fscanf_s(plik, "%s", bufor.nazwa_etapu, MAX_DLUGOSC); //wczytanie wyników do zmiennej pomocniczej
+			fscanf_s(plik, "%s", bufor.nazwa_gracza, MAX_DLUGOSC);
 			fscanf_s(plik, "%d", &bufor.liczba_punktow);
-			printf("%s/", bufor.nazwa_etapu, 20); //wyœwietlenie wyników na ekranie
-			printf("%s/", bufor.nazwa_gracza, 20);
+			printf("%s/", bufor.nazwa_etapu, MAX_DLUGOSC); //wyœwietlenie wyników na ekranie
+			printf("%s/", bufor.nazwa_gracza, MAX_DLUGOSC);
 			printf("%d\n", bufor.liczba_punktow);
 			fseek(plik, 2, SEEK_CUR);
 		}
@@ -526,7 +527,7 @@ int main()
 {
 	srand(time(NULL));
 	int wybor, w_x, w_y, dlugosc_etapu, szerokosc_etapu, wyjscie;
-	char nazwa_etapu[20]; //tablica pomocnicza
+	char nazwa_etapu[MAX_DLUGOSC]; //tablica pomocnicza
 	Etap Obecny_etap;
 	Gra Nowa_gra;
 	wyjscie = 1;
@@ -540,13 +541,18 @@ int main()
 			printf("Wybrales nowa gre.\n");
 			instrukcja_do_gry();
 			printf("Podaj swoje imie.\n");
-			scanf_s("%s", Nowa_gra.nazwa_gracza, 20);
+			scanf_s("%s", Nowa_gra.nazwa_gracza, MAX_DLUGOSC);
 			printf("---------------\n");
 			while (wyjscie == 1) //przejœcie do kolejnego poziomu (po dotarciu na metê w poprzednim)
 			{
 				wyswietl_liste_etapow();
-				printf("Wybierz etap z powyzszej listy.\n");
-				scanf_s("%s", &Nowa_gra.nazwa_etapu, 20);
+				printf("Wybierz etap z powyzszej listy lub nacisniæ 'c' aby cofnac.\n");
+				scanf_s("%s", &Nowa_gra.nazwa_etapu, MAX_DLUGOSC);
+				if (strcmp(Nowa_gra.nazwa_etapu, "c") == 0) //mo¿liwoœæ cofniêcia do g³ównego menu
+				{
+					system("cls");
+					break;
+				}
 				wczytaj_etap(Nowa_gra.nazwa_etapu, &Obecny_etap);
 				wyjscie = sterowanie(&Obecny_etap, &Nowa_gra);
 				zapisz_wyniki(Nowa_gra);
