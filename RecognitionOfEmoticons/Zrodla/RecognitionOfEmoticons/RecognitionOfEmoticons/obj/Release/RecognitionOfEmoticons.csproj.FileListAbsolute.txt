@@ -1,0 +1,29 @@
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\RecognitionOfEmoticons.exe.config
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\RecognitionOfEmoticons.exe
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\RecognitionOfEmoticons.pdb
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.Form1.resources
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.Properties.Resources.resources
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.csproj.GenerateResource.Cache
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.csproj.CoreCompileInputs.cache
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.exe
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.pdb
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\Emgu.CV.World.dll
+D:\Users\Rafal Suszka\Documents\Visual Studio 2017\Projects\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\Emgu.CV.World.xml
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\concrt140.dll
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\cvextern.dll
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\msvcp140.dll
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\opencv_ffmpeg341_64.dll
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\vcruntime140.dll
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\cvextern.lib
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\RecognitionOfEmoticons.exe.config
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\RecognitionOfEmoticons.exe
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\RecognitionOfEmoticons.pdb
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\Emgu.CV.World.dll
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\bin\Release\Emgu.CV.World.xml
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.csprojResolveAssemblyReference.cache
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.Form1.resources
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.Properties.Resources.resources
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.csproj.GenerateResource.Cache
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.csproj.CoreCompileInputs.cache
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.exe
+C:\Users\Rafal Suszka\Desktop\copy\RecognitionOfEmoticons\RecognitionOfEmoticons\obj\Release\RecognitionOfEmoticons.pdb
